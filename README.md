@@ -1,16 +1,16 @@
-## Web Audio扩展模块
-##### 一个基于HTMLAudioElement的播放模块
+## xaudio.js
+##### A Multiple Audio Player Module
 
 -----
 
-### 特性
-- 支持播放列表
-- 支持三种播放模式：单曲循环，列表循环，随机播放
-- 支持上一曲下一曲操作
-- 诸多便捷细节，如：直接返回/设置播放百分比，获取已播放/总时长的分钟值，等等
-- 纯属娱乐，仅供参考
+### Features
+- playlist supported
+- 3 kind of play mode：single loop，list loop，random
+- skip prev and skip next
+- and more
+- just for fun, enjoy it :)
 
-### 示例
+### Examples
 
 ```javascript
 var list = [
@@ -33,26 +33,40 @@ var list = [
 
 var player = new XAudio(list);
 
-// 获取播放列表长度
+// get list length
 player.listLength(); // 5
+// or
+player.__list.length; // 5
 
-// 播放列表里面的第4首
+// play the 4th audio in the playlist
 player.index(3).play();
-// 或者
-player.play(4);
+// or
+player.play(3);
 
-// 获取当前播放的index
-player.index(); // 4
+// get current index
+player.index(); // 3
 
-// 更改播放模式[1：列表，2：单曲，3：随机]
+// switch play mode [1：list，2：single，3：random]
 player.mode(3);
 
-// 跳转到30%播放
+// jump to 30%
 player.progress(30);
 
-// 暂停播放
+// jump to 65s
+player.currentTime(65);
 
+// get current time
+player.currentTime(); // 65
+
+// mute
+player.muted(true);
+
+// unmute
+player.muted(false);
+
+// play next
+player.next();
+
+// and more examples is on the way
 ```
 ---
-
-##### 更详细的内容请参见代码注释

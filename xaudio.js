@@ -72,17 +72,18 @@
             return new XAudio(list);
         }
 
+        this.playing = false;
+
         this.__list = [];
         this.__index = 0;
         this.__mode = 1;
-        this.__playing = false;
         this.__events = {};
         this.__init(list)
             .__registerAudioEvents();
 
     }
 
-    XAudio.prototype.__init = function() {
+    XAudio.prototype.__init = function(list) {
 
         this[0] = new Audio();
         this.list(list);
@@ -100,23 +101,23 @@
         }.bind(this));
 
         this[0].addEventListener('ended', function() {
-            this.__playing = false;
+            this.playing = false;
             this.trigger('ended').next(true);
         }.bind(this));
 
         this[0].addEventListener('play', function() {
-            this.__playing = true;
+            this.playing = true;
             this.trigger('play');
         }.bind(this));
 
         this[0].addEventListener('pause', function() {
-            this.__playing = false;
+            this.playing = false;
             this.trigger('pause');
         }.bind(this));
 
         this[0].addEventListener('error', function() {
-            this.__playing = false;
-            this.trigger('pause');
+            this.playing = false;
+            this.trigger('error');
         }.bind(this));
 
         this[0].addEventListener('timeupdate', function() {
@@ -164,6 +165,8 @@
 
             if (Object.prototype.toString.call(__list) === '[object Array]') {
                 this.__list = __list;
+                this.trigger('listchange', this.__list);
+                this.trigger('listload', this.__list);
             }
             return this;
 
@@ -250,6 +253,7 @@
     XAudio.prototype.stop = function() {
 
         this.pause().currentTime(0);
+        this.trigger('stop');
         return this;
 
     }
@@ -271,7 +275,7 @@
      */
     XAudio.prototype.toggle = function() {
 
-        this.__playing ? this.pause() : this.play();
+        this.playing ? this.pause() : this.play();
         return this;
 
     }
@@ -340,6 +344,7 @@
 
         if (Object.prototype.toString.call(mute) === '[object Boolean]') {
             this[0].muted = mute;
+            this.trigger('muted', mute);
             return this;
         } else {
             return this[0].muted;
@@ -357,7 +362,7 @@
         if (volume !== undefined) {
 
             if (!isNaN(volume) && volume >= 0 && volume <= 1) {
-                this.trigger('volumechange', volume)[0].volume = volume;                return this;
+                this.trigger('volumechange', volume)[0].volume = volume;
             }
             return this;
 
@@ -402,6 +407,10 @@
 
             if (!isNaN(__index) && __index >= 0 && __index < this.__list.length) {
                 this.__index = __index;
+                for(var i = 0;i < this.__list.length;i++) {
+                    this.__list[i].isCurrent = false;
+                }
+                this.__list[__index].isCurrent = true;
                 this.trigger('indexchange', __index)[0].src = this.__list[__index].src;
             }
             return this;
@@ -424,7 +433,9 @@
                 this.add(subitem);
             }.bind(this));
         } else if (this.__checkItem(item)) {
+            item.isCurrent = false;
             this.__list.push(item);
+            this.trigger('listchange', this.__list);
         }
 
         return this;
@@ -439,7 +450,7 @@
     XAudio.prototype.remove = function(index) {
 
         var __index = parseInt(index);
-        __index >= 0 && __index < this.__list.length && this.__list.splice(__index, 1);
+        __index >= 0 && __index < this.__list.length && (this.__list.splice(__index, 1), this.trigger('listchange', this.__list));
         return this;
 
     }

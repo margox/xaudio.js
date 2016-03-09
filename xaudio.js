@@ -215,7 +215,7 @@
         }
 
         this.index(__index);
-        this.currentTime(0)
+        this.currentTime(0);
         this.play();
 
         return this;

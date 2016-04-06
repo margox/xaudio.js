@@ -4,20 +4,20 @@
  * @version 0.0.1
  */
 
-(function(factory){
+(function (factory) {
 
     /*
      * 添加UMD支持
      */
     if (typeof exports === 'object') {
-         module.exports = factory();
+        module.exports = factory();
     } else if (typeof define === 'function' && define.amd) {
-         define(factory);
+        define(factory);
     } else {
-         window.XAudio = factory();
+        window.XAudio = factory();
     }
 
-})(function() {
+})(function () {
 
     'use strict';
 
@@ -41,7 +41,7 @@
 
         var __result = {}
 
-        Array.prototype.forEach.call(arguments, function(argument) {
+        Array.prototype.forEach.call(arguments, function (argument) {
 
             var __prop;
             var __value;
@@ -83,7 +83,7 @@
 
     }
 
-    XAudio.prototype.__init = function(list) {
+    XAudio.prototype.__init = function (list) {
 
         this[0] = new Audio();
         this.list(list);
@@ -94,33 +94,33 @@
 
     }
 
-    XAudio.prototype.__registerAudioEvents = function() {
+    XAudio.prototype.__registerAudioEvents = function () {
 
-        this[0].addEventListener('loadedmetadata', function() {
+        this[0].addEventListener('loadedmetadata', function () {
             this.trigger('loadedmetadata');
         }.bind(this));
 
-        this[0].addEventListener('ended', function() {
+        this[0].addEventListener('ended', function () {
             this.playing = false;
             this.trigger('ended').next(true);
         }.bind(this));
 
-        this[0].addEventListener('play', function() {
+        this[0].addEventListener('play', function () {
             this.playing = true;
             this.trigger('play');
         }.bind(this));
 
-        this[0].addEventListener('pause', function() {
+        this[0].addEventListener('pause', function () {
             this.playing = false;
             this.trigger('pause');
         }.bind(this));
 
-        this[0].addEventListener('error', function() {
+        this[0].addEventListener('error', function () {
             this.playing = false;
             this.trigger('error');
         }.bind(this));
 
-        this[0].addEventListener('timeupdate', function() {
+        this[0].addEventListener('timeupdate', function () {
             if (this.__events['timeupdate']) {
                 this.trigger('timeupdate', this[0].currentTime, this.progress());
             }
@@ -130,7 +130,7 @@
 
     }
 
-    XAudio.prototype.__rebuildList = function(list) {
+    XAudio.prototype.__rebuildList = function (list) {
 
         var __result = [];
 
@@ -138,7 +138,7 @@
             return false;
         }
 
-        list.forEach(function(item) {
+        list.forEach(function (item) {
             if (this.__checkItem(item)) {
                 __result.push(item);
             }
@@ -148,7 +148,7 @@
 
     }
 
-    XAudio.prototype.__checkItem = function(item) {
+    XAudio.prototype.__checkItem = function (item) {
         return Object.prototype.toString.call(item.src) === '[object String]';
     }
 
@@ -157,7 +157,7 @@
      * @param  {[Array]} 播放列表数组 [可选，如果不传入任何值，则返回播放列表]
      * @return {Array/Object} 返回播放列表数组，或者返回实例以便于链式调用
      */
-    XAudio.prototype.list = function(list) {
+    XAudio.prototype.list = function (list) {
 
         var __list = this.__rebuildList(list);
 
@@ -180,7 +180,7 @@
      * 返回播放列表的长度
      * @return {Number} 列表的长度
      */
-    XAudio.prototype.listLength = function() {
+    XAudio.prototype.listLength = function () {
         return this.__list.length;
     }
 
@@ -189,7 +189,7 @@
      * @param  {Number} index 选填，指定需要立即播放的音频的index
      * @return {Object} 返回实例已便于链式调用
      */
-    XAudio.prototype.play = function(index) {
+    XAudio.prototype.play = function (index) {
 
         this.index(index);
         this[0].play();
@@ -202,13 +202,13 @@
      * @param  {Boolean} isAuto 选填，单曲模式下，传入true会重新播放当前音频
      * @return {Object} 返回实例以便于链式调用
      */
-    XAudio.prototype.next = function(isAuto) {
+    XAudio.prototype.next = function (isAuto) {
 
         var __index = this.__index;
 
         if (this.__mode === 1) {
             __index = __index === this.__list.length - 1 ? 0 : __index + 1;
-        } else if (this.__mode === 2){
+        } else if (this.__mode === 2) {
             __index = isAuto ? __index : (__index === this.__list.length - 1 ? 0 : __index + 1);
         } else if (this.__mode === 3) {
             __index = __getRandom(0, this.__list.length);
@@ -226,13 +226,13 @@
      * 播放上一个音频
      * @return {Object} 返回实例以便于链式调用
      */
-    XAudio.prototype.prev = function() {
+    XAudio.prototype.prev = function () {
 
         var __index = this.__index;
 
         if (this.__mode === 1) {
             __index = __index === 0 ? this.__list.length - 1 : __index - 1;
-        } else if (this.__mode === 2){
+        } else if (this.__mode === 2) {
             __index = __index === 0 ? this.__list.length - 1 : __index - 1;
         } else if (this.__mode === 3) {
             __index = __getRandom(0, this.__list.length);
@@ -250,7 +250,7 @@
      * 停止播放，将播放进度跳转至起始位置
      * @return {Object} 返回实例以便于链式调用
      */
-    XAudio.prototype.stop = function() {
+    XAudio.prototype.stop = function () {
 
         this.pause().currentTime(0);
         this.trigger('stop');
@@ -262,7 +262,7 @@
      * 暂停播放
      *  @return {Object} 返回实例以便于链式调用
      */
-    XAudio.prototype.pause = function() {
+    XAudio.prototype.pause = function () {
 
         this[0].pause();
         return this;
@@ -273,7 +273,7 @@
      * 轮流切换播放和暂停状态
      *  @return {Object} 返回实例以便于链式调用
      */
-    XAudio.prototype.toggle = function() {
+    XAudio.prototype.toggle = function () {
 
         this.playing ? this.pause() : this.play();
         return this;
@@ -285,12 +285,12 @@
      * @param  {Number} progress 0-100之间的数字，可选项，不传入任何值则返回当前播放的百分比
      * @return {Number/Object} 返回当前播放百分比，或者返回实例以便于链式调用
      */
-    XAudio.prototype.progress = function(progress) {
+    XAudio.prototype.progress = function (progress) {
 
         if (progress !== undefined) {
 
             if (!isNaN(progress) && progress >= 0 && progress <= 100 && this[0].duration > 0) {
-                    this.currentTime(progress / 100 * this[0].duration);
+                this.currentTime(progress / 100 * this[0].duration);
             }
             return this;
 
@@ -305,7 +305,7 @@
      * @param  {Boolean} returnMinutes 是否返回分钟值
      * @return {Number/String} 返回时长或者分钟值
      */
-    XAudio.prototype.duration = function(returnMinutes) {
+    XAudio.prototype.duration = function (returnMinutes) {
         return returnMinutes ? __secToMin(this[0].duration) : this[0].duration;
     }
 
@@ -314,7 +314,7 @@
      * @param  {Number} time 0或以上的数字，可选项，不传入任何值则返回当前播放秒数,也可以传入true来获取已播放的分钟值
      * @return {Number/Object} 返回当前播放秒数/分钟值，或者返回实例以便于链式调用
      */
-    XAudio.prototype.currentTime = function(time) {
+    XAudio.prototype.currentTime = function (time) {
 
         var __time = parseInt(time);
 
@@ -336,7 +336,7 @@
      * @param  {Boolean} mute 传入布尔值来设置静音状态，不传入任何值则返回静音状态
      * @return {Boolean/Object} 返回静音状态布尔值，或者返回实例以便于链式调用
      */
-    XAudio.prototype.muted = function(mute) {
+    XAudio.prototype.muted = function (mute) {
 
         if (mute !== undefined) {
             mute = !!mute;
@@ -357,7 +357,7 @@
      * @param  {Number} volume 0-1之间的数字，可选填，不传入则返回当前音量值
      * @return {Number/Object} 返回音量值，或者返回实例以便于链式调用
      */
-    XAudio.prototype.volume = function(volume) {
+    XAudio.prototype.volume = function (volume) {
 
         if (volume !== undefined) {
 
@@ -377,7 +377,7 @@
      * @param  {Number} mode 1：列表循环，2：单曲循环,3：随机播放。可选填，不传入则返回当前播放模式
      * @return {Number/Object} 返回当前播放模式，或者返回实例以便于链式调用
      */
-    XAudio.prototype.mode = function(mode) {
+    XAudio.prototype.mode = function (mode) {
 
         var __mode = parseInt(mode);
 
@@ -399,7 +399,7 @@
      * @param  {Number} index 传入>=0的整数，可选填，不传入则返回当前音频在播放列表里面的序号
      * @return {Number} 返回当前音频在播放列表里面的序号,或者返回实例以便于链式调用
      */
-    XAudio.prototype.index = function(index) {
+    XAudio.prototype.index = function (index) {
 
         var __index = parseInt(index);
 
@@ -407,7 +407,7 @@
 
             if (!isNaN(__index) && __index >= 0 && __index < this.__list.length) {
                 this.__index = __index;
-                for(var i = 0;i < this.__list.length;i++) {
+                for (var i = 0; i < this.__list.length; i++) {
                     this.__list[i].isCurrent = false;
                 }
                 this.__list[__index].isCurrent = true;
@@ -429,7 +429,7 @@
     XAudio.prototype.add = function (item) {
 
         if (Object.prototype.toString.call(item) === '[object Array]') {
-            item.forEach(function(subitem) {
+            item.forEach(function (subitem) {
                 this.add(subitem);
             }.bind(this));
         } else if (this.__checkItem(item)) {
@@ -447,7 +447,7 @@
      * @param  {Number} index 指定需要移除的项目的序号[从0开始]
      * @return {Object} 返回实例以便于链式调用
      */
-    XAudio.prototype.remove = function(index) {
+    XAudio.prototype.remove = function (index) {
 
         var __index = parseInt(index);
         __index >= 0 && __index < this.__list.length && (this.__list.splice(__index, 1), this.trigger('listchange', this.__list));
@@ -455,7 +455,7 @@
 
     }
 
-    XAudio.prototype.on = function(eventName, method) {
+    XAudio.prototype.on = function (eventName, method) {
 
         var __event;
 
@@ -478,7 +478,7 @@
 
     }
 
-    XAudio.prototype.off = function(eventName) {
+    XAudio.prototype.off = function (eventName) {
 
         if (typeof eventName === 'string') {
             this.__events[eventName] = [];
@@ -488,7 +488,7 @@
 
     }
 
-    XAudio.prototype.trigger = function() {
+    XAudio.prototype.trigger = function () {
 
         var __eventName = Array.prototype.shift.call(arguments),
             __arguments = arguments,
@@ -498,7 +498,7 @@
 
         if (typeof __eventName === 'string' && Object.prototype.hasOwnProperty.call(this.__events, __eventName) && (this.__events[__eventName] instanceof Array)) {
 
-            this.__events[__eventName].forEach(function(method) {
+            this.__events[__eventName].forEach(function (method) {
 
                 if (!__returnFalse) {
                     __return = method.apply(__that, __arguments);

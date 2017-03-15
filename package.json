@@ -1,0 +1,27 @@
+{
+  "name": "xaudio.js",
+  "version": "1.0.0",
+  "description": "An Enhanced Web Audio Object",
+  "main": "xaudio.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/margox/xaudio.js.git"
+  },
+  "keywords": [
+    "web",
+    "audio",
+    "playlist",
+    "list",
+    "extend",
+    "enhance"
+  ],
+  "author": "Margox",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/margox/xaudio.js/issues"
+  },
+  "homepage": "https://github.com/margox/xaudio.js#readme"
+}
